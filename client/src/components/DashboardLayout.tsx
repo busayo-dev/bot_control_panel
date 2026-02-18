@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Switch as UISwitch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,19 +29,20 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
-const navItems: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: <BarChart3 className="w-5 h-5" /> },
-  { label: 'Users', href: '/dashboard/users', icon: <Users className="w-5 h-5" /> },
-  { label: 'Messages', href: '/dashboard/messages', icon: <MessageSquare className="w-5 h-5" /> },
-  { label: 'Videos', href: '/dashboard/videos', icon: <Video className="w-5 h-5" /> },
-  { label: 'Bot Responses', href: '/dashboard/responses', icon: <MessageSquare className="w-5 h-5" /> },
-  { label: 'Settings', href: '/dashboard/settings', icon: <Settings className="w-5 h-5" /> },
-];
-
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { logout } = useAuth();
   const [, setLocation] = useLocation();
+  const { t, language, setLanguage, isRTL } = useLanguage();
+
+  const navItems: NavItem[] = [
+    { label: t('dashboard'), href: '/dashboard', icon: <BarChart3 className="w-5 h-5" /> },
+    { label: t('users'), href: '/dashboard/users', icon: <Users className="w-5 h-5" /> },
+    { label: t('messages'), href: '/dashboard/messages', icon: <MessageSquare className="w-5 h-5" /> },
+    { label: t('videos'), href: '/dashboard/videos', icon: <Video className="w-5 h-5" /> },
+    { label: t('botResponses'), href: '/dashboard/responses', icon: <MessageSquare className="w-5 h-5" /> },
+    { label: t('settings'), href: '/dashboard/settings', icon: <Settings className="w-5 h-5" /> },
+  ];
 
   const handleLogout = () => {
     logout();
@@ -60,7 +64,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">🤖</span>
               </div>
-              <span className="font-bold text-slate-900">Bot Admin</span>
+              <span className="font-bold text-slate-900">{t('botAdmin')}</span>
             </div>
           )}
           <button
@@ -95,9 +99,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
                     <span className="text-emerald-600 font-bold text-sm">A</span>
                   </div>
-                  <div className="text-left">
-                    <p className="text-sm font-medium text-slate-900">Admin</p>
-                    <p className="text-xs text-slate-500">Manager</p>
+                  <div className={isRTL ? 'text-right' : 'text-left'}>
+                    <p className="text-sm font-medium text-slate-900">{t('admin')}</p>
+                    <p className="text-xs text-slate-500">{t('manager')}</p>
                   </div>
                 </div>
                 {sidebarOpen && <ChevronDown className="w-4 h-4 text-slate-600" />}
@@ -105,8 +109,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem onClick={handleLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Logout</span>
+                <LogOut className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4`} />
+                <span>{t('logout')}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -117,11 +121,21 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="h-16 bg-white border-b border-border flex items-center justify-between px-6 shadow-sm">
-          <h1 className="text-2xl font-bold text-slate-900">WhatsApp Bot Admin</h1>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-slate-600">
-              <p className="font-medium">Admin Dashboard</p>
-              <p className="text-xs text-slate-500">Manage your bot operations</p>
+          <h1 className="text-2xl font-bold text-slate-900">{t('botAdmin')}</h1>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
+              <Label htmlFor="lang-toggle" className="text-xs font-bold text-slate-500 cursor-pointer">
+                {language === 'he' ? 'עברית' : 'English'}
+              </Label>
+              <UISwitch
+                id="lang-toggle"
+                checked={language === 'en'}
+                onCheckedChange={(checked) => setLanguage(checked ? 'en' : 'he')}
+              />
+            </div>
+            <div className={`text-sm text-slate-600 ${isRTL ? 'text-right' : 'text-left'}`}>
+              <p className="font-medium">{t('adminDashboard')}</p>
+              <p className="text-xs text-slate-500">{t('manageOperations')}</p>
             </div>
           </div>
         </header>

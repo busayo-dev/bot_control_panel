@@ -136,6 +136,9 @@ export const stats = {
       sent_today: number;
     }>('GET', '/stats');
   },
+  getChartData: async () => {
+    return apiRequest<any[]>('GET', '/chart-data');
+  },
 };
 
 // User Management API calls
