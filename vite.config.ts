@@ -179,7 +179,7 @@ export default defineConfig({
       ".manusvm.computer",
       "localhost",
       "127.0.0.1",
-      "https://entozoic-leia-red.ngrok-free.dev"
+      "https://bot-control-panel-6zb8.onrender.com"
     ],
     fs: {
       strict: true,
