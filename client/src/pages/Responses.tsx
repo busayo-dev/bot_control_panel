@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { botResponses, buttons } from '@/lib/api';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Edit2, Plus, Trash2, Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -31,6 +32,7 @@ interface BotResponse {
 }
 
 export default function Responses() {
+  const { t, isRTL } = useLanguage();
   const [responses, setResponses] = useState<BotResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -77,9 +79,9 @@ export default function Responses() {
 
       setEditingId(null);
       setEditText('');
-      toast.success('Response updated successfully');
+      toast.success(t('messageSuccess'));
     } catch (err) {
-      toast.error('Failed to update response');
+      toast.error('Error');
     } finally {
       setSaving(false);
     }
@@ -102,9 +104,9 @@ export default function Responses() {
         )
       );
 
-      toast.success('Button deleted successfully');
+      toast.success(t('messageSuccess'));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to delete button');
+      toast.error('Error');
     }
   };
 
@@ -112,9 +114,9 @@ export default function Responses() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Bot Responses</h1>
-          <p className="text-slate-600 mt-2">Manage bot messages and buttons</p>
+        <div className={isRTL ? 'text-right' : 'text-left'}>
+          <h1 className="text-3xl font-bold text-slate-900">{t('manageResponses')}</h1>
+          <p className="text-slate-600 mt-2">{t('editResponses')}</p>
         </div>
 
         {/* Responses List */}
@@ -132,15 +134,15 @@ export default function Responses() {
           <div className="space-y-4">
             {responses.map((response) => (
               <Card key={response.id} className="overflow-hidden">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
+                <CardHeader className={`pb-3 ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <div className={`flex items-start justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <div className="flex-1">
-                      <div className="flex items-center gap-2">
+                      <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <code className="px-2 py-1 bg-slate-100 text-slate-900 rounded text-xs font-mono">
                           {response.key}
                         </code>
                         <span className="text-xs text-slate-600">
-                          {response.buttons.length} button{response.buttons.length !== 1 ? 's' : ''}
+                          {response.buttons.length} {t('botResponses')}
                         </span>
                       </div>
                     </div>
@@ -157,15 +159,15 @@ export default function Responses() {
                   <CardContent className="space-y-4 pt-0">
                     {/* Message Text */}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-900">Message Text</label>
+                      <label className={`block text-sm font-medium text-slate-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('responseText')}</label>
                       {editingId === response.id ? (
                         <div className="space-y-2">
                           <Textarea
                             value={editText}
                             onChange={(e) => setEditText(e.target.value)}
-                            className="min-h-24 resize-none"
+                            className={`min-h-24 resize-none ${isRTL ? 'text-right' : 'text-left'}`}
                           />
-                          <div className="flex gap-2 justify-end">
+                          <div className={`flex gap-2 ${isRTL ? 'justify-start' : 'justify-end'}`}>
                             <Button
                               variant="outline"
                               onClick={handleCancel}
@@ -181,12 +183,12 @@ export default function Responses() {
                               {saving ? (
                                 <>
                                   <Loader2 className="h-4 w-4 animate-spin" />
-                                  Saving...
+                                  {t('sending')}
                                 </>
                               ) : (
                                 <>
                                   <Save className="h-4 w-4" />
-                                  Save
+                                  {t('saveChanges')}
                                 </>
                               )}
                             </Button>
@@ -194,10 +196,10 @@ export default function Responses() {
                         </div>
                       ) : (
                         <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                          <p className="text-sm text-slate-900 whitespace-pre-wrap">{response.text}</p>
+                          <p className={`text-sm text-slate-900 whitespace-pre-wrap ${isRTL ? 'text-right' : 'text-left'}`}>{response.text}</p>
                           <button
                             onClick={() => handleEdit(response)}
-                            className="mt-3 inline-flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-700 font-medium"
+                            className={`mt-3 inline-flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-700 font-medium ${isRTL ? 'flex-row-reverse' : ''}`}
                           >
                             <Edit2 className="h-4 w-4" />
                             Edit
@@ -209,14 +211,14 @@ export default function Responses() {
                     {/* Buttons */}
                     {response.buttons.length > 0 && (
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-900">Buttons</label>
+                        <label className={`block text-sm font-medium text-slate-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('buttonsConfig')}</label>
                         <div className="space-y-2">
                           {response.buttons.map((btn) => (
                             <div
                               key={btn.id}
-                              className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200"
+                              className={`flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200 ${isRTL ? 'flex-row-reverse' : ''}`}
                             >
-                              <div>
+                              <div className={isRTL ? 'text-right' : 'text-left'}>
                                 <p className="text-sm font-medium text-slate-900">{btn.title}</p>
                                 <p className="text-xs text-slate-600 font-mono">{btn.buttonId}</p>
                               </div>
@@ -242,21 +244,21 @@ export default function Responses() {
                           className="w-full gap-2 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
                         >
                           <Plus className="h-4 w-4" />
-                          Add Button
+                          {t('addButton')}
                         </Button>
                       </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Add New Button</DialogTitle>
+                      <DialogContent className={isRTL ? 'text-right' : 'text-left'}>
+                        <DialogHeader className={isRTL ? 'text-right' : 'text-left'}>
+                          <DialogTitle>{t('addButton')}</DialogTitle>
                           <DialogDescription>
-                            Add a new button to this response
+                            {t('buttonsConfig')}
                           </DialogDescription>
                         </DialogHeader>
                         <AddButtonForm
                           responseId={response.id}
                           onSuccess={() => {
                             fetchResponses();
-                            toast.success('Button added successfully');
+                            toast.success(t('messageSuccess'));
                           }}
                         />
                       </DialogContent>
@@ -279,6 +281,7 @@ function AddButtonForm({
   responseId: number;
   onSuccess: () => void;
 }) {
+  const { t, isRTL } = useLanguage();
   const [buttonId, setButtonId] = useState('');
   const [title, setTitle] = useState('');
   const [order, setOrder] = useState('0');
@@ -302,7 +305,7 @@ function AddButtonForm({
       });
       onSuccess();
     } catch (err) {
-      toast.error('Failed to add button');
+      toast.error('Error');
     } finally {
       setLoading(false);
     }
@@ -311,31 +314,34 @@ function AddButtonForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <label className="text-sm font-medium">Button ID</label>
+        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>Button ID</label>
         <Input
           placeholder="e.g., REGISTER_BTN"
           value={buttonId}
           onChange={(e) => setButtonId(e.target.value)}
           disabled={loading}
+          className={isRTL ? 'text-right' : 'text-left'}
         />
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Button Title</label>
+        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>{t('buttonTitle')}</label>
         <Input
           placeholder="e.g., Register Now"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           disabled={loading}
+          className={isRTL ? 'text-right' : 'text-left'}
         />
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Order</label>
+        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>Order</label>
         <Input
           type="number"
           placeholder="0"
           value={order}
           onChange={(e) => setOrder(e.target.value)}
           disabled={loading}
+          className={isRTL ? 'text-right' : 'text-left'}
         />
       </div>
       <Button
@@ -343,7 +349,7 @@ function AddButtonForm({
         disabled={loading}
         className="w-full bg-emerald-600 hover:bg-emerald-700"
       >
-        {loading ? 'Adding...' : 'Add Button'}
+        {loading ? t('sending') : t('addButton')}
       </Button>
     </form>
   );

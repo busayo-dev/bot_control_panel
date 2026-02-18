@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { videos } from '@/lib/api';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Edit2, Plus, Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -25,6 +26,7 @@ interface Video {
 }
 
 export default function Videos() {
+  const { t, isRTL } = useLanguage();
   const [videoList, setVideoList] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -83,9 +85,9 @@ export default function Videos() {
 
       setEditingId(null);
       setEditData({ url: '', description: '' });
-      toast.success('Video updated successfully');
+      toast.success(t('messageSuccess'));
     } catch (err) {
-      toast.error('Failed to update video');
+      toast.error('Error');
     } finally {
       setSaving(false);
     }
@@ -100,16 +102,16 @@ export default function Videos() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Video Management</h1>
-          <p className="text-slate-600 mt-2">Manage video content and descriptions</p>
+        <div className={isRTL ? 'text-right' : 'text-left'}>
+          <h1 className="text-3xl font-bold text-slate-900">{t('videoContent')}</h1>
+          <p className="text-slate-600 mt-2">{t('manageVideos')}</p>
         </div>
 
         {/* Info Box */}
         <Card className="bg-blue-50 border-blue-200">
           <CardContent className="pt-6">
-            <p className="text-sm text-blue-900">
-              <span className="font-semibold">Note:</span> Videos are delivered sequentially to users. Each video has a unique index number that determines the delivery order.
+            <p className={`text-sm text-blue-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+              <span className="font-semibold">Note:</span> Sequential delivery logic.
             </p>
           </CardContent>
         </Card>
@@ -127,14 +129,14 @@ export default function Videos() {
                 <DialogTrigger asChild>
                   <Button className="bg-emerald-600 hover:bg-emerald-700 gap-2">
                     <Plus className="h-4 w-4" />
-                    Add First Video
+                    {t('addButton')}
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Video</DialogTitle>
+                <DialogContent className={isRTL ? 'text-right' : 'text-left'}>
+                  <DialogHeader className={isRTL ? 'text-right' : 'text-left'}>
+                    <DialogTitle>{t('addButton')}</DialogTitle>
                     <DialogDescription>
-                      Add a new video to your collection
+                      {t('manageVideos')}
                     </DialogDescription>
                   </DialogHeader>
                   <AddVideoForm onSuccess={fetchVideos} />
@@ -146,11 +148,11 @@ export default function Videos() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {videoList.map((video) => (
               <Card key={video.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
+                <CardHeader className={`pb-3 ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <div className={`flex items-start justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <div>
-                      <CardTitle className="text-lg">Video #{video.videoIndex}</CardTitle>
-                      <CardDescription>Index: {video.videoIndex}</CardDescription>
+                      <CardTitle className="text-lg">{t('videos')} #{video.videoIndex}</CardTitle>
+                      <CardDescription>{t('videoIndex')}: {video.videoIndex}</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -159,7 +161,7 @@ export default function Videos() {
                   {editingId === video.id ? (
                     <div className="space-y-3">
                       <div className="space-y-2">
-                        <label className="text-sm font-medium">Video URL</label>
+                        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>{t('videoUrl')}</label>
                         <Input
                           placeholder="https://..."
                           value={editData.url}
@@ -167,21 +169,22 @@ export default function Videos() {
                             setEditData({ ...editData, url: e.target.value })
                           }
                           disabled={saving}
+                          className={isRTL ? 'text-right' : 'text-left'}
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium">Description</label>
+                        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>{t('description')}</label>
                         <Textarea
-                          placeholder="Video description..."
+                          placeholder={t('description')}
                           value={editData.description}
                           onChange={(e) =>
                             setEditData({ ...editData, description: e.target.value })
                           }
                           disabled={saving}
-                          className="min-h-20 resize-none"
+                          className={`min-h-20 resize-none ${isRTL ? 'text-right' : 'text-left'}`}
                         />
                       </div>
-                      <div className="flex gap-2 justify-end">
+                      <div className={`flex gap-2 ${isRTL ? 'justify-start' : 'justify-end'}`}>
                         <Button
                           variant="outline"
                           onClick={handleCancel}
@@ -199,12 +202,12 @@ export default function Videos() {
                           {saving ? (
                             <>
                               <Loader2 className="h-3 w-3 animate-spin" />
-                              Saving...
+                              {t('sending')}
                             </>
                           ) : (
                             <>
                               <Save className="h-3 w-3" />
-                              Save
+                              {t('saveChanges')}
                             </>
                           )}
                         </Button>
@@ -213,8 +216,8 @@ export default function Videos() {
                   ) : (
                     <>
                       {video.videoUrl && (
-                        <div className="space-y-2">
-                          <p className="text-xs text-slate-600 font-medium">URL</p>
+                        <div className={`space-y-2 ${isRTL ? 'text-right' : 'text-left'}`}>
+                          <p className="text-xs text-slate-600 font-medium">{t('videoUrl')}</p>
                           <a
                             href={video.videoUrl}
                             target="_blank"
@@ -226,15 +229,12 @@ export default function Videos() {
                         </div>
                       )}
                       {video.description && (
-                        <div className="space-y-2">
-                          <p className="text-xs text-slate-600 font-medium">Description</p>
+                        <div className={`space-y-2 ${isRTL ? 'text-right' : 'text-left'}`}>
+                          <p className="text-xs text-slate-600 font-medium">{t('description')}</p>
                           <p className="text-sm text-slate-900 line-clamp-3">
                             {video.description}
                           </p>
                         </div>
-                      )}
-                      {!video.videoUrl && !video.description && (
-                        <p className="text-sm text-slate-500 italic">No content added yet</p>
                       )}
                       <Button
                         onClick={() => handleEdit(video)}
@@ -257,15 +257,15 @@ export default function Videos() {
                 <Card className="border-2 border-dashed border-slate-300 hover:border-emerald-500 cursor-pointer transition-colors flex items-center justify-center min-h-64">
                   <CardContent className="text-center">
                     <Plus className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                    <p className="text-sm font-medium text-slate-600">Add New Video</p>
+                    <p className="text-sm font-medium text-slate-600">{t('addButton')}</p>
                   </CardContent>
                 </Card>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Add New Video</DialogTitle>
+              <DialogContent className={isRTL ? 'text-right' : 'text-left'}>
+                <DialogHeader className={isRTL ? 'text-right' : 'text-left'}>
+                  <DialogTitle>{t('addButton')}</DialogTitle>
                   <DialogDescription>
-                    Add a new video to your collection
+                    {t('manageVideos')}
                   </DialogDescription>
                 </DialogHeader>
                 <AddVideoForm onSuccess={fetchVideos} />
@@ -279,6 +279,7 @@ export default function Videos() {
 }
 
 function AddVideoForm({ onSuccess }: { onSuccess: () => void }) {
+  const { t, isRTL } = useLanguage();
   const [videoIndex, setVideoIndex] = useState('');
   const [url, setUrl] = useState('');
   const [description, setDescription] = useState('');
@@ -300,9 +301,9 @@ function AddVideoForm({ onSuccess }: { onSuccess: () => void }) {
         description,
       });
       onSuccess();
-      toast.success('Video added successfully');
+      toast.success(t('messageSuccess'));
     } catch (err) {
-      toast.error('Failed to add video');
+      toast.error('Error');
     } finally {
       setLoading(false);
     }
@@ -311,35 +312,34 @@ function AddVideoForm({ onSuccess }: { onSuccess: () => void }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <label className="text-sm font-medium">Video Index</label>
+        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>{t('videoIndex')}</label>
         <Input
           type="number"
           placeholder="e.g., 1"
           value={videoIndex}
           onChange={(e) => setVideoIndex(e.target.value)}
           disabled={loading}
+          className={isRTL ? 'text-right' : 'text-left'}
         />
-        <p className="text-xs text-slate-600">
-          Unique number for this video in the sequence
-        </p>
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Video URL</label>
+        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>{t('videoUrl')}</label>
         <Input
-          placeholder="https://example.com/video.mp4"
+          placeholder="https://..."
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           disabled={loading}
+          className={isRTL ? 'text-right' : 'text-left'}
         />
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Description</label>
+        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>{t('description')}</label>
         <Textarea
-          placeholder="Optional: Describe this video..."
+          placeholder={t('description')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           disabled={loading}
-          className="min-h-20 resize-none"
+          className={`min-h-20 resize-none ${isRTL ? 'text-right' : 'text-left'}`}
         />
       </div>
       <Button
@@ -347,7 +347,7 @@ function AddVideoForm({ onSuccess }: { onSuccess: () => void }) {
         disabled={loading}
         className="w-full bg-emerald-600 hover:bg-emerald-700"
       >
-        {loading ? 'Adding...' : 'Add Video'}
+        {loading ? t('sending') : t('addButton')}
       </Button>
     </form>
   );

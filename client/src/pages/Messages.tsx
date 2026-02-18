@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { messaging } from '@/lib/api';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Send, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -30,6 +31,7 @@ interface SendResult {
 }
 
 export default function Messages() {
+  const { t, isRTL } = useLanguage();
   const [message, setMessage] = useState('');
   const [target, setTarget] = useState<MessageTarget>('subscribers');
   const [loading, setLoading] = useState(false);
@@ -37,9 +39,9 @@ export default function Messages() {
   const [result, setResult] = useState<SendResult | null>(null);
 
   const targetLabels: Record<MessageTarget, string> = {
-    all: 'All Users',
-    subscribers: 'Active Subscribers Only',
-    blocked: 'Blocked Users Only',
+    all: t('allUsers'),
+    subscribers: t('onlySubscribers'),
+    blocked: t('onlyBlocked'),
   };
 
   const handleSend = () => {
@@ -60,9 +62,9 @@ export default function Messages() {
 
       setResult(response.results as SendResult);
       setMessage('');
-      toast.success('Messages sent successfully');
+      toast.success(t('messageSuccess'));
     } catch (err) {
-      toast.error('Failed to send messages');
+      toast.error('Error');
     } finally {
       setLoading(false);
       setShowConfirm(false);
@@ -73,60 +75,59 @@ export default function Messages() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Bulk Messaging</h1>
-          <p className="text-slate-600 mt-2">Send messages to multiple users at once</p>
+        <div className={isRTL ? 'text-right' : 'text-left'}>
+          <h1 className="text-3xl font-bold text-slate-900">{t('broadcastMessages')}</h1>
+          <p className="text-slate-600 mt-2">{t('sendBulk')}</p>
         </div>
 
         {/* Message Composer */}
         <Card>
-          <CardHeader>
-            <CardTitle>Compose Message</CardTitle>
-            <CardDescription>Create and send a message to your users</CardDescription>
+          <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
+            <CardTitle>{t('broadcastMessages')}</CardTitle>
+            <CardDescription>{t('sendBulk')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Target Selection */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-900">Send To</label>
+              <label className={`block text-sm font-medium text-slate-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('targetAudience')}</label>
               <Select value={target} onValueChange={(value) => setTarget(value as MessageTarget)}>
-                <SelectTrigger>
+                <SelectTrigger dir={isRTL ? 'rtl' : 'ltr'}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Users</SelectItem>
-                  <SelectItem value="subscribers">Active Subscribers Only</SelectItem>
-                  <SelectItem value="blocked">Blocked Users Only</SelectItem>
+                <SelectContent dir={isRTL ? 'rtl' : 'ltr'}>
+                  <SelectItem value="all">{t('allUsers')}</SelectItem>
+                  <SelectItem value="subscribers">{t('onlySubscribers')}</SelectItem>
+                  <SelectItem value="blocked">{t('onlyBlocked')}</SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-xs text-slate-600">
-                Messages will be sent to: <span className="font-semibold">{targetLabels[target]}</span>
+              <p className={`text-xs text-slate-600 ${isRTL ? 'text-right' : 'text-left'}`}>
+                {t('targetAudience')}: <span className="font-semibold">{targetLabels[target]}</span>
               </p>
             </div>
 
             {/* Message Input */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-900">Message Content</label>
+              <label className={`block text-sm font-medium text-slate-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('messageContent')}</label>
               <Textarea
-                placeholder="Enter your message here... (supports emoji and line breaks)"
+                placeholder={t('typeMessage')}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 disabled={loading}
-                className="min-h-32 resize-none"
+                className={`min-h-32 resize-none ${isRTL ? 'text-right' : 'text-left'}`}
               />
-              <p className="text-xs text-slate-600">
+              <p className={`text-xs text-slate-600 ${isRTL ? 'text-right' : 'text-left'}`}>
                 Character count: {message.length} / 1000
               </p>
             </div>
 
             {/* Info Box */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3">
+            <div className={`bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-blue-900">
+              <div className={`text-sm text-blue-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                 <p className="font-medium">Important Notes</p>
                 <ul className="list-disc list-inside mt-2 space-y-1 text-xs">
-                  <li>Messages will be sent immediately to all selected users</li>
+                  <li>Messages will be sent immediately</li>
                   <li>This action cannot be undone</li>
-                  <li>Blocked users will not receive messages</li>
                 </ul>
               </div>
             </div>
@@ -140,12 +141,12 @@ export default function Messages() {
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Sending...
+                  {t('sending')}
                 </>
               ) : (
                 <>
                   <Send className="h-4 w-4" />
-                  Send Message
+                  {t('sendMessage')}
                 </>
               )}
             </Button>
@@ -155,10 +156,10 @@ export default function Messages() {
         {/* Results */}
         {result && (
           <Card className="border-emerald-200 bg-emerald-50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-emerald-900">
+            <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
+              <CardTitle className={`flex items-center gap-2 text-emerald-900 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <CheckCircle className="h-5 w-5" />
-                Messages Sent
+                {t('messagesSent')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -175,85 +176,33 @@ export default function Messages() {
             </CardContent>
           </Card>
         )}
-
-        {/* Template Suggestions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Message Templates</CardTitle>
-            <CardDescription>Quick templates for common messages</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <TemplateButton
-                title="Announcement"
-                template="📢 Important Update: We have exciting new content coming your way! Stay tuned!"
-                onClick={(text) => setMessage(text)}
-              />
-              <TemplateButton
-                title="Reminder"
-                template="⏰ Reminder: Don't forget to check your daily video! Reply 'Next' to get started."
-                onClick={(text) => setMessage(text)}
-              />
-              <TemplateButton
-                title="Maintenance"
-                template="🔧 Scheduled Maintenance: We're updating our system. Services will be back online shortly."
-                onClick={(text) => setMessage(text)}
-              />
-              <TemplateButton
-                title="Survey"
-                template="📋 Quick Survey: We'd love to hear your feedback! Reply with your thoughts."
-                onClick={(text) => setMessage(text)}
-              />
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Confirmation Dialog */}
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
-        <AlertDialogContent>
+        <AlertDialogContent className={isRTL ? 'text-right' : 'text-left'}>
           <AlertDialogTitle>Confirm Message Send</AlertDialogTitle>
           <AlertDialogDescription>
             <div className="space-y-3">
               <p>You are about to send this message to <span className="font-semibold">{targetLabels[target]}</span>:</p>
-              <div className="bg-slate-100 p-4 rounded-lg border border-slate-200 max-h-32 overflow-y-auto">
+              <div className={`bg-slate-100 p-4 rounded-lg border border-slate-200 max-h-32 overflow-y-auto ${isRTL ? 'text-right' : 'text-left'}`}>
                 <p className="text-sm text-slate-900 whitespace-pre-wrap">{message}</p>
               </div>
               <p className="text-sm text-red-600 font-medium">This action cannot be undone.</p>
             </div>
           </AlertDialogDescription>
-          <div className="flex gap-3 justify-end">
+          <div className={`flex gap-3 ${isRTL ? 'justify-start' : 'justify-end'}`}>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmSend}
               disabled={loading}
               className="bg-emerald-600 hover:bg-emerald-700"
             >
-              {loading ? 'Sending...' : 'Send'}
+              {loading ? t('sending') : t('sendMessage')}
             </AlertDialogAction>
           </div>
         </AlertDialogContent>
       </AlertDialog>
     </DashboardLayout>
-  );
-}
-
-function TemplateButton({
-  title,
-  template,
-  onClick,
-}: {
-  title: string;
-  template: string;
-  onClick: (text: string) => void;
-}) {
-  return (
-    <button
-      onClick={() => onClick(template)}
-      className="p-3 text-left border border-border rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition-all group"
-    >
-      <p className="font-medium text-slate-900 group-hover:text-emerald-600">{title}</p>
-      <p className="text-xs text-slate-600 mt-1 line-clamp-2">{template}</p>
-    </button>
   );
 }

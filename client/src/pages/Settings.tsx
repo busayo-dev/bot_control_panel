@@ -4,12 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { auth } from '@/lib/api';
 import { Loader2, Lock, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 import { useLocation } from 'wouter';
 
 export default function Settings() {
+  const { t, isRTL } = useLanguage();
   const { logout } = useAuth();
   const [, setLocation] = useLocation();
   const [passwordData, setPasswordData] = useState({
@@ -50,9 +52,9 @@ export default function Settings() {
         confirmPassword: '',
       });
 
-      toast.success('Password changed successfully');
+      toast.success(t('messageSuccess'));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to change password');
+      toast.error('Error');
     } finally {
       setLoading(false);
     }
@@ -67,58 +69,61 @@ export default function Settings() {
     <DashboardLayout>
       <div className="space-y-6 max-w-2xl">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
-          <p className="text-slate-600 mt-2">Manage your account and preferences</p>
+        <div className={isRTL ? 'text-right' : 'text-left'}>
+          <h1 className="text-3xl font-bold text-slate-900">{t('settings')}</h1>
+          <p className="text-slate-600 mt-2">{t('adminSettings')}</p>
         </div>
 
         {/* Change Password */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+          <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
+            <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <Lock className="h-5 w-5" />
-              Change Password
+              {t('changePassword')}
             </CardTitle>
-            <CardDescription>Update your admin account password</CardDescription>
+            <CardDescription>{t('updatePassword')}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">Current Password</label>
+                <label className={`block text-sm font-medium text-slate-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('oldPassword')}</label>
                 <Input
                   type="password"
-                  placeholder="Enter your current password"
+                  placeholder={t('oldPassword')}
                   value={passwordData.oldPassword}
                   onChange={(e) =>
                     setPasswordData({ ...passwordData, oldPassword: e.target.value })
                   }
                   disabled={loading}
+                  className={isRTL ? 'text-right' : 'text-left'}
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">New Password</label>
+                <label className={`block text-sm font-medium text-slate-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('newPassword')}</label>
                 <Input
                   type="password"
-                  placeholder="Enter new password"
+                  placeholder={t('newPassword')}
                   value={passwordData.newPassword}
                   onChange={(e) =>
                     setPasswordData({ ...passwordData, newPassword: e.target.value })
                   }
                   disabled={loading}
+                  className={isRTL ? 'text-right' : 'text-left'}
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">Confirm New Password</label>
+                <label className={`block text-sm font-medium text-slate-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t('confirmPassword')}</label>
                 <Input
                   type="password"
-                  placeholder="Confirm new password"
+                  placeholder={t('confirmPassword')}
                   value={passwordData.confirmPassword}
                   onChange={(e) =>
                     setPasswordData({ ...passwordData, confirmPassword: e.target.value })
                   }
                   disabled={loading}
+                  className={isRTL ? 'text-right' : 'text-left'}
                 />
               </div>
 
@@ -129,94 +134,34 @@ export default function Settings() {
               >
                 {loading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Updating...
+                    <Loader2 className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4 animate-spin`} />
+                    {t('sending')}
                   </>
                 ) : (
-                  'Update Password'
+                  t('updatePassword')
                 )}
               </Button>
             </form>
           </CardContent>
         </Card>
 
-        {/* Account Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Account Information</CardTitle>
-            <CardDescription>Your admin account details</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <p className="text-sm text-slate-600">Role</p>
-              <p className="text-lg font-semibold text-slate-900">Administrator</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-600">Status</p>
-              <p className="text-lg font-semibold text-emerald-600">Active</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-600">API Base URL</p>
-              <p className="text-sm font-mono text-slate-900 break-all">
-                https://whatsapp-video-bot-slb7.onrender.com/api/admin
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Danger Zone */}
         <Card className="border-red-200 bg-red-50">
-          <CardHeader>
+          <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
             <CardTitle className="text-red-900">Danger Zone</CardTitle>
             <CardDescription className="text-red-800">
               Irreversible actions
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className={isRTL ? 'text-right' : 'text-left'}>
             <Button
               onClick={handleLogout}
               variant="destructive"
               className="gap-2 bg-red-600 hover:bg-red-700"
             >
               <LogOut className="h-4 w-4" />
-              Logout
+              {t('logout')}
             </Button>
-          </CardContent>
-        </Card>
-
-        {/* API Documentation */}
-        <Card>
-          <CardHeader>
-            <CardTitle>API Information</CardTitle>
-            <CardDescription>Integration details for developers</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <p className="text-sm font-medium text-slate-900 mb-2">Available Endpoints</p>
-              <ul className="text-sm text-slate-600 space-y-1 list-disc list-inside">
-                <li>GET /stats - Dashboard statistics</li>
-                <li>GET /users - List all users</li>
-                <li>POST /users/toggle-block - Block/unblock user</li>
-                <li>POST /bulk-message - Send bulk messages</li>
-                <li>GET /videos - List videos</li>
-                <li>POST /videos - Update video</li>
-                <li>GET /responses - List bot responses</li>
-                <li>PUT /responses/:id - Update response</li>
-                <li>POST /buttons - Add button</li>
-                <li>PUT /buttons/:id - Update button</li>
-                <li>DELETE /buttons/:id - Delete button</li>
-              </ul>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-slate-900 mb-2">Authentication</p>
-              <p className="text-sm text-slate-600">
-                All requests require a Bearer token in the Authorization header:
-              </p>
-              <code className="block mt-2 p-2 bg-slate-900 text-emerald-400 rounded text-xs overflow-x-auto">
-                Authorization: Bearer &lt;your_token&gt;
-              </code>
-            </div>
           </CardContent>
         </Card>
       </div>

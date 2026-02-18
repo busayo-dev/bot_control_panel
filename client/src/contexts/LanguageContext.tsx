@@ -45,6 +45,68 @@ export const translations: Translations = {
   manageUsersDesc: { en: 'View and block users', he: 'צפייה וחסימת משתמשים' },
   sendMessagesDesc: { en: 'Bulk message users', he: 'שליחת הודעות בתפוצה רחבה' },
   botResponsesDesc: { en: 'Edit bot messages', he: 'עריכת הודעות הבוט' },
+
+  // Users Page
+  userManagement: { en: 'User Management', he: 'ניהול משתמשים' },
+  viewUsers: { en: 'View and manage your bot users', he: 'צפה ונהל את משתמשי הבוט שלך' },
+  searchUsers: { en: 'Search users...', he: 'חפש משתמשים...' },
+  fullName: { en: 'Full Name', he: 'שם מלא' },
+  whatsappId: { en: 'WhatsApp ID', he: 'מזהה WhatsApp' },
+  status: { en: 'Status', he: 'סטטוס' },
+  subscribed: { en: 'Subscribed', he: 'מנוי' },
+  unsubscribed: { en: 'Unsubscribed', he: 'לא מנוי' },
+  blocked: { en: 'Blocked', he: 'חסום' },
+  active: { en: 'Active', he: 'פעיל' },
+  actions: { en: 'Actions', he: 'פעולות' },
+  blockUser: { en: 'Block User', he: 'חסום משתמש' },
+  unblockUser: { en: 'Unblock User', he: 'בטל חסימה' },
+  lastActive: { en: 'Last Active', he: 'פעילות אחרונה' },
+
+  // Messages Page
+  broadcastMessages: { en: 'Broadcast Messages', he: 'הודעות תפוצה' },
+  sendBulk: { en: 'Send bulk messages to your users', he: 'שלח הודעות בתפוצה רחבה למשתמשים שלך' },
+  messageContent: { en: 'Message Content', he: 'תוכן ההודעה' },
+  typeMessage: { en: 'Type your message here...', he: 'הקלד את ההודעה כאן...' },
+  targetAudience: { en: 'Target Audience', he: 'קהל יעד' },
+  allUsers: { en: 'All Users', he: 'כל המשתמשים' },
+  onlySubscribers: { en: 'Only Subscribers', he: 'מנויים בלבד' },
+  onlyBlocked: { en: 'Only Blocked Users', he: 'משתמשים חסומים בלבד' },
+  sendMessage: { en: 'Send Message', he: 'שלח הודעה' },
+  sending: { en: 'Sending...', he: 'שולח...' },
+  messageSuccess: { en: 'Message sent successfully!', he: 'ההודעה נשלחה בהצלחה!' },
+
+  // Videos Page
+  videoContent: { en: 'Video Content', he: 'תוכן וידאו' },
+  manageVideos: { en: 'Manage the videos sent by the bot', he: 'נהל את הסרטונים שנשלחים על ידי הבוט' },
+  videoIndex: { en: 'Video Index', he: 'אינדקס וידאו' },
+  videoUrl: { en: 'Video URL', he: 'כתובת URL של הוידאו' },
+  description: { en: 'Description', he: 'תיאור' },
+  updateVideo: { en: 'Update Video', he: 'עדכן וידאו' },
+  saveChanges: { en: 'Save Changes', he: 'שמור שינויים' },
+
+  // Bot Responses Page
+  manageResponses: { en: 'Manage Bot Responses', he: 'ניהול תגובות בוט' },
+  editResponses: { en: 'Edit automated bot messages and buttons', he: 'ערוך הודעות וכפתורים אוטומטיים של הבוט' },
+  responseText: { en: 'Response Text', he: 'טקסט התגובה' },
+  buttonsConfig: { en: 'Buttons Configuration', he: 'הגדרת כפתורים' },
+  buttonTitle: { en: 'Button Title', he: 'כותרת הכפתור' },
+  addButton: { en: 'Add Button', he: 'הוסף כפתור' },
+  updateResponse: { en: 'Update Response', he: 'עדכן תגובה' },
+
+  // Settings Page
+  adminSettings: { en: 'Admin Settings', he: 'הגדרות מנהל' },
+  changePassword: { en: 'Change Password', he: 'שינוי סיסמה' },
+  oldPassword: { en: 'Old Password', he: 'סיסמה ישנה' },
+  newPassword: { en: 'New Password', he: 'סיסמה חדשה' },
+  confirmPassword: { en: 'Confirm New Password', he: 'אמת סיסמה חדשה' },
+  updatePassword: { en: 'Update Password', he: 'עדכן סיסמה' },
+
+  // Login Page
+  loginTitle: { en: 'Admin Login', he: 'כניסת מנהל' },
+  username: { en: 'Username', he: 'שם משתמש' },
+  password: { en: 'Password', he: 'סיסמה' },
+  signIn: { en: 'Sign In', he: 'התחבר' },
+  loginError: { en: 'Invalid username or password', he: 'שם משתמש או סיסמה שגויים' },
 };
 
 interface LanguageContextType {

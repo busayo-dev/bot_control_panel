@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { users } from '@/lib/api';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Search, Shield, ShieldOff, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -28,6 +29,7 @@ interface User {
 }
 
 export default function Users() {
+  const { t, isRTL } = useLanguage();
   const [userList, setUserList] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +57,7 @@ export default function Users() {
       const response = await users.getUsers();
       setUserList(response as User[]);
     } catch (err) {
-      toast.error('Failed to fetch users');
+      toast.error(t('loginError'));
     } finally {
       setLoading(false);
     }
@@ -79,11 +81,9 @@ export default function Users() {
         )
       );
 
-      toast.success(
-        selectedUser.isBlocked ? 'User unblocked successfully' : 'User blocked successfully'
-      );
+      toast.success(t('messageSuccess'));
     } catch (err) {
-      toast.error('Failed to update user status');
+      toast.error('Error');
     } finally {
       setActionLoading(false);
       setShowBlockDialog(false);
@@ -95,21 +95,21 @@ export default function Users() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">User Management</h1>
-          <p className="text-slate-600 mt-2">View and manage WhatsApp bot users</p>
+        <div className={isRTL ? 'text-right' : 'text-left'}>
+          <h1 className="text-3xl font-bold text-slate-900">{t('userManagement')}</h1>
+          <p className="text-slate-600 mt-2">{t('viewUsers')}</p>
         </div>
 
         {/* Search */}
         <Card>
           <CardContent className="pt-6">
             <div className="relative">
-              <Search className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+              <Search className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-3 h-5 w-5 text-slate-400`} />
               <Input
-                placeholder="Search by phone number or name..."
+                placeholder={t('searchUsers')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className={isRTL ? 'pr-10 text-right' : 'pl-10'}
               />
             </div>
           </CardContent>
@@ -117,10 +117,10 @@ export default function Users() {
 
         {/* Users Table */}
         <Card>
-          <CardHeader>
-            <CardTitle>Users ({filteredUsers.length})</CardTitle>
+          <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
+            <CardTitle>{t('users')} ({filteredUsers.length})</CardTitle>
             <CardDescription>
-              Total users: {userList.length} | Active subscribers: {userList.filter((u) => u.isSubscribed).length}
+              {t('totalUsers')}: {userList.length} | {t('activeSubscribers')}: {userList.filter((u) => u.isSubscribed).length}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -134,17 +134,17 @@ export default function Users() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="data-table">
+                <table className={`data-table ${isRTL ? 'text-right' : 'text-left'}`}>
                   <thead>
                     <tr>
-                      <th>Phone Number</th>
-                      <th>Name</th>
-                      <th>Gender</th>
-                      <th>Daily Time</th>
-                      <th>Status</th>
-                      <th>Video Index</th>
-                      <th>Last Active</th>
-                      <th>Actions</th>
+                      <th className={isRTL ? 'text-right' : 'text-left'}>{t('whatsappId')}</th>
+                      <th className={isRTL ? 'text-right' : 'text-left'}>{t('fullName')}</th>
+                      <th className={isRTL ? 'text-right' : 'text-left'}>Gender</th>
+                      <th className={isRTL ? 'text-right' : 'text-left'}>Daily Time</th>
+                      <th className={isRTL ? 'text-right' : 'text-left'}>{t('status')}</th>
+                      <th className={isRTL ? 'text-right' : 'text-left'}>{t('videoIndex')}</th>
+                      <th className={isRTL ? 'text-right' : 'text-left'}>{t('lastActive')}</th>
+                      <th className={isRTL ? 'text-right' : 'text-left'}>{t('actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -155,20 +155,20 @@ export default function Users() {
                         <td className="capitalize">{user.gender || '-'}</td>
                         <td>{user.dailyTime || '-'}</td>
                         <td>
-                          <div className="flex gap-2">
+                          <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                             {user.isSubscribed && (
                               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                                Subscribed
+                                {t('subscribed')}
                               </span>
                             )}
                             {user.isBlocked && (
                               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                Blocked
+                                {t('blocked')}
                               </span>
                             )}
                             {!user.isSubscribed && !user.isBlocked && (
                               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
-                                Inactive
+                                {t('active')}
                               </span>
                             )}
                           </div>
@@ -188,12 +188,12 @@ export default function Users() {
                             {user.isBlocked ? (
                               <>
                                 <ShieldOff className="h-4 w-4" />
-                                Unblock
+                                {t('unblockUser')}
                               </>
                             ) : (
                               <>
                                 <Shield className="h-4 w-4" />
-                                Block
+                                {t('blockUser')}
                               </>
                             )}
                           </Button>
@@ -210,16 +210,16 @@ export default function Users() {
 
       {/* Block Confirmation Dialog */}
       <AlertDialog open={showBlockDialog} onOpenChange={setShowBlockDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className={isRTL ? 'text-right' : 'text-left'}>
           <AlertDialogTitle>
-            {selectedUser?.isBlocked ? 'Unblock User' : 'Block User'}
+            {selectedUser?.isBlocked ? t('unblockUser') : t('blockUser')}
           </AlertDialogTitle>
           <AlertDialogDescription>
             {selectedUser?.isBlocked
               ? `Are you sure you want to unblock ${selectedUser?.fullName || selectedUser?.waId}? They will be able to receive messages again.`
               : `Are you sure you want to block ${selectedUser?.fullName || selectedUser?.waId}? They will not be able to receive any messages.`}
           </AlertDialogDescription>
-          <div className="flex gap-3 justify-end">
+          <div className={`flex gap-3 ${isRTL ? 'justify-start' : 'justify-end'}`}>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmBlockToggle}
@@ -228,13 +228,13 @@ export default function Users() {
             >
               {actionLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
+                  <Loader2 className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4 animate-spin`} />
+                  {t('sending')}
                 </>
               ) : selectedUser?.isBlocked ? (
-                'Unblock'
+                t('unblockUser')
               ) : (
-                'Block'
+                t('blockUser')
               )}
             </AlertDialogAction>
           </div>
