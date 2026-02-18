@@ -6,7 +6,7 @@ export default function NotFound() {
   const [, setLocation] = useLocation();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 px-4">
       <div className="text-center max-w-md">
         <div className="mb-8">
           <h1 className="text-8xl font-bold text-emerald-600 mb-4">404</h1>
