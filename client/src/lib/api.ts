@@ -134,6 +134,8 @@ export const stats = {
       active_subscribers: number;
       blocked_users: number;
       sent_today: number;
+      active_24h: number;
+      active_1h: number;
     }>('GET', '/stats');
   },
   getChartData: async () => {
@@ -167,6 +169,11 @@ export const videos = {
 
   updateVideo: async (video: VideoUpdate) => {
     return apiRequest('POST', '/videos', video);
+  },
+  updateAllDescriptions: async (description: string) => {
+    return apiRequest('POST', '/videos/update-all-descriptions', {
+      description,
+    });
   },
 };
 

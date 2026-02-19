@@ -83,6 +83,11 @@ export const translations: Translations = {
   description: { en: 'Description', he: 'תיאור' },
   updateVideo: { en: 'Update Video', he: 'עדכן וידאו' },
   saveChanges: { en: 'Save Changes', he: 'שמור שינויים' },
+  globalDescription: { en: 'Global Description', he: 'תיאור גלובלי' },
+  updateAllVideos: { en: 'Update All Videos', he: 'עדכן את כל הסרטונים' },
+  individualDescriptions: { en: 'Individual Video Descriptions', he: 'תיאור לכל סרטון בנפרד' },
+  active24h: { en: 'Active (24h)', he: 'פעילים (24 שעות)' },
+  active1h: { en: 'Active (1h)', he: 'פעילים (שעה אחרונה)' },
 
   // Bot Responses Page
   manageResponses: { en: 'Manage Bot Responses', he: 'ניהול תגובות בוט' },

@@ -32,6 +32,8 @@ export default function Videos() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editData, setEditData] = useState({ url: '', description: '' });
   const [saving, setSaving] = useState(false);
+  const [globalDesc, setGlobalDesc] = useState('');
+  const [updatingGlobal, setUpdatingGlobal] = useState(false);
 
   useEffect(() => {
     fetchVideos();
@@ -98,23 +100,71 @@ export default function Videos() {
     setEditData({ url: '', description: '' });
   };
 
+  const handleGlobalUpdate = async () => {
+    if (!globalDesc.trim()) {
+      toast.error('Please enter a description');
+      return;
+    }
+
+    try {
+      setUpdatingGlobal(true);
+      await videos.updateAllDescriptions(globalDesc);
+      toast.success(t('messageSuccess'));
+      fetchVideos();
+      setGlobalDesc('');
+    } catch (err) {
+      toast.error('Failed to update all descriptions');
+    } finally {
+      setUpdatingGlobal(false);
+    }
+  };
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Header */}
         <div className={isRTL ? 'text-right' : 'text-left'}>
           <h1 className="text-3xl font-bold text-slate-900">{t('videoContent')}</h1>
           <p className="text-slate-600 mt-2">{t('manageVideos')}</p>
         </div>
 
-        {/* Info Box */}
-        <Card className="bg-blue-50 border-blue-200">
-          <CardContent className="pt-6">
-            <p className={`text-sm text-blue-900 ${isRTL ? 'text-right' : 'text-left'}`}>
-              <span className="font-semibold">Note:</span> Sequential delivery logic.
-            </p>
+        {/* Global Description Section */}
+        <Card className="border-emerald-200 shadow-sm">
+          <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
+            <CardTitle className="text-emerald-800">{t('globalDescription')}</CardTitle>
+            <CardDescription>
+              Updating this field will set the same description for all videos.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Textarea
+              placeholder={t('description')}
+              value={globalDesc}
+              onChange={(e) => setGlobalDesc(e.target.value)}
+              className={`min-h-24 ${isRTL ? 'text-right' : 'text-left'}`}
+            />
+            <div className={`flex ${isRTL ? 'justify-start' : 'justify-end'}`}>
+              <Button
+                onClick={handleGlobalUpdate}
+                disabled={updatingGlobal || !globalDesc.trim()}
+                className="bg-emerald-600 hover:bg-emerald-700 gap-2"
+              >
+                {updatingGlobal ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
+                {t('updateAllVideos')}
+              </Button>
+            </div>
           </CardContent>
         </Card>
+
+        <div className="border-t border-slate-200 pt-4">
+          <h2 className={`text-xl font-semibold text-slate-800 mb-4 ${isRTL ? 'text-right' : 'text-left'}`}>
+            {t('individualDescriptions')}
+          </h2>
+        </div>
 
         {/* Videos Grid */}
         {loading ? (

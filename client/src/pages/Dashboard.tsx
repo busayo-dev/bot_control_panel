@@ -11,6 +11,8 @@ interface Stats {
   active_subscribers: number;
   blocked_users: number;
   sent_today: number;
+  active_24h: number;
+  active_1h: number;
 }
 
 export default function Dashboard() {
@@ -50,7 +52,7 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
           <StatCard
             title={t('totalUsers')}
             value={statsData?.total_users || 0}
@@ -77,6 +79,20 @@ export default function Dashboard() {
             value={statsData?.sent_today || 0}
             icon={<Send className="w-5 h-5 text-purple-600" />}
             trend="+24%"
+            loading={loading}
+          />
+          <StatCard
+            title={t('active24h')}
+            value={statsData?.active_24h || 0}
+            icon={<Users className="w-5 h-5 text-orange-600" />}
+            trend="+15%"
+            loading={loading}
+          />
+          <StatCard
+            title={t('active1h')}
+            value={statsData?.active_1h || 0}
+            icon={<Users className="w-5 h-5 text-amber-600" />}
+            trend="+5%"
             loading={loading}
           />
         </div>
