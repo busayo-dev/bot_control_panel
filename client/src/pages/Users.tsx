@@ -20,7 +20,7 @@ interface User {
   id: number;
   waId: string;
   fullName: string | null;
-  gender: string | null;
+
   dailyTime: string | null;
   isSubscribed: boolean;
   isBlocked: boolean;
@@ -139,7 +139,7 @@ export default function Users() {
                     <tr>
                       <th className={isRTL ? 'text-right' : 'text-left'}>{t('whatsappId')}</th>
                       <th className={isRTL ? 'text-right' : 'text-left'}>{t('fullName')}</th>
-                      <th className={isRTL ? 'text-right' : 'text-left'}>Gender</th>
+
                       <th className={isRTL ? 'text-right' : 'text-left'}>Daily Time</th>
                       <th className={isRTL ? 'text-right' : 'text-left'}>{t('status')}</th>
                       <th className={isRTL ? 'text-right' : 'text-left'}>{t('videoIndex')}</th>
@@ -152,7 +152,7 @@ export default function Users() {
                       <tr key={user.id}>
                         <td className="font-mono text-sm">{user.waId}</td>
                         <td>{user.fullName || '-'}</td>
-                        <td className="capitalize">{user.gender || '-'}</td>
+
                         <td>{user.dailyTime || '-'}</td>
                         <td>
                           <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>

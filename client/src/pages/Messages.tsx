@@ -136,7 +136,7 @@ export default function Messages() {
                 className={`min-h-32 resize-none ${isRTL ? 'text-right' : 'text-left'}`}
               />
               <p className={`text-xs text-slate-600 ${isRTL ? 'text-right' : 'text-left'}`}>
-                Character count: {message.length} / 1000
+                {t('characterCount')}: {message.length} / 1000
               </p>
             </div>
 
@@ -144,10 +144,10 @@ export default function Messages() {
             <div className={`bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div className={`text-sm text-blue-900 ${isRTL ? 'text-right' : 'text-left'}`}>
-                <p className="font-medium">Important Notes</p>
+                <p className="font-medium">{t('importantNotes')}</p>
                 <ul className="list-disc list-inside mt-2 space-y-1 text-xs">
-                  <li>Messages will be sent immediately</li>
-                  <li>This action cannot be undone</li>
+                  <li>{t('messagesSentImmediately')}</li>
+                  <li>{t('cannotUndo')}</li>
                 </ul>
               </div>
             </div>
@@ -185,11 +185,11 @@ export default function Messages() {
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-white rounded-lg border border-emerald-200">
-                  <p className="text-sm text-slate-600">Successful</p>
+                  <p className="text-sm text-slate-600">{t('successful')}</p>
                   <p className="text-3xl font-bold text-emerald-600">{result.success}</p>
                 </div>
                 <div className="p-4 bg-white rounded-lg border border-red-200">
-                  <p className="text-sm text-slate-600">Failed</p>
+                  <p className="text-sm text-slate-600">{t('failed')}</p>
                   <p className="text-3xl font-bold text-red-600">{result.failure}</p>
                 </div>
               </div>
@@ -201,7 +201,7 @@ export default function Messages() {
       {/* Confirmation Dialog */}
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent className={isRTL ? 'text-right' : 'text-left'}>
-          <AlertDialogTitle>Confirm Message Send</AlertDialogTitle>
+          <AlertDialogTitle>{t('confirmMessageSend')}</AlertDialogTitle>
               <AlertDialogDescription>
             <div className="space-y-3">
               <p>
@@ -215,7 +215,7 @@ export default function Messages() {
             </div>
           </AlertDialogDescription>
           <div className={`flex gap-3 ${isRTL ? 'justify-start' : 'justify-end'}`}>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmSend}
               disabled={loading}

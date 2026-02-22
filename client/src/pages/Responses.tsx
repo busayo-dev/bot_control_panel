@@ -28,6 +28,7 @@ interface BotResponse {
   id: number;
   key: string;
   text: string;
+  description: string | null;
   buttons: Button[];
 }
 
@@ -138,12 +139,19 @@ export default function Responses() {
                   <div className={`flex items-start justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <div className="flex-1">
                       <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                        <code className="px-2 py-1 bg-slate-100 text-slate-900 rounded text-xs font-mono">
-                          {response.key}
-                        </code>
-                        <span className="text-xs text-slate-600">
-                          {response.buttons.length} {t('botResponses')}
-                        </span>
+                        <div className="flex flex-col gap-1">
+                          <code className="w-fit px-2 py-1 bg-slate-100 text-slate-900 rounded text-xs font-mono">
+                            {response.key}
+                          </code>
+                          {response.description && (
+                            <span className="text-sm font-medium text-slate-700">
+                              {response.description}
+                            </span>
+                          )}
+                          <span className="text-xs text-slate-500">
+                            {response.buttons.length} {t('botResponses')}
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <button
@@ -173,7 +181,7 @@ export default function Responses() {
                               onClick={handleCancel}
                               disabled={saving}
                             >
-                              Cancel
+                              {t('cancel')}
                             </Button>
                             <Button
                               onClick={handleSave}
@@ -202,7 +210,7 @@ export default function Responses() {
                             className={`mt-3 inline-flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-700 font-medium ${isRTL ? 'flex-row-reverse' : ''}`}
                           >
                             <Edit2 className="h-4 w-4" />
-                            Edit
+                            {t('edit')}
                           </button>
                         </div>
                       )}
@@ -314,7 +322,7 @@ function AddButtonForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>Button ID</label>
+        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>{t('buttonId')}</label>
         <Input
           placeholder="e.g., REGISTER_BTN"
           value={buttonId}
@@ -334,7 +342,7 @@ function AddButtonForm({
         />
       </div>
       <div className="space-y-2">
-        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>Order</label>
+        <label className={`block text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>{t('order')}</label>
         <Input
           type="number"
           placeholder="0"

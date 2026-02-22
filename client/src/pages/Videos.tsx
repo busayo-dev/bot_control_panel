@@ -133,7 +133,7 @@ export default function Videos() {
           <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
             <CardTitle className="text-emerald-800">{t('globalDescription')}</CardTitle>
             <CardDescription>
-              Updating this field will set the same description for all videos.
+              {t('globalDescriptionDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -241,7 +241,7 @@ export default function Videos() {
                           disabled={saving}
                           size="sm"
                         >
-                          Cancel
+                          {t('cancel')}
                         </Button>
                         <Button
                           onClick={handleSave}
@@ -293,7 +293,7 @@ export default function Videos() {
                         size="sm"
                       >
                         <Edit2 className="h-4 w-4" />
-                        Edit
+                        {t('edit')}
                       </Button>
                     </>
                   )}
