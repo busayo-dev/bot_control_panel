@@ -45,7 +45,7 @@ function Router() {
       <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/dashboard/users" component={() => <ProtectedRoute component={Users} />} />
       <Route path="/dashboard/messages" component={() => <ProtectedRoute component={Messages} />} />
-      <Route path="/dashboard/videos" component={() => <ProtectedRoute component={Videos} />} />
+      {/* <Route path="/dashboard/videos" component={() => <ProtectedRoute component={Videos} />} /> */}
       <Route path="/dashboard/responses" component={() => <ProtectedRoute component={Responses} />} />
       <Route path="/dashboard/settings" component={() => <ProtectedRoute component={Settings} />} />
       <Route path="/404" component={NotFound} />

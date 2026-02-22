@@ -39,7 +39,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { label: t('dashboard'), href: '/dashboard', icon: <BarChart3 className="w-5 h-5" /> },
     { label: t('users'), href: '/dashboard/users', icon: <Users className="w-5 h-5" /> },
     { label: t('messages'), href: '/dashboard/messages', icon: <MessageSquare className="w-5 h-5" /> },
-    { label: t('videos'), href: '/dashboard/videos', icon: <Video className="w-5 h-5" /> },
+    // { label: t('videos'), href: '/dashboard/videos', icon: <Video className="w-5 h-5" /> },
     { label: t('botResponses'), href: '/dashboard/responses', icon: <MessageSquare className="w-5 h-5" /> },
     { label: t('settings'), href: '/dashboard/settings', icon: <Settings className="w-5 h-5" /> },
   ];
