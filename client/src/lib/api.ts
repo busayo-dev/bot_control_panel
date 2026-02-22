@@ -26,7 +26,10 @@ interface ChangePasswordRequest {
 interface BulkMessageRequest {
   message: string;
   target: 'all' | 'subscribers' | 'blocked';
+  onlyActive24h?: boolean;
 }
+
+type TimeRange = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
 interface VideoUpdate {
   video_index: number;
@@ -138,8 +141,8 @@ export const stats = {
       active_1h: number;
     }>('GET', '/stats');
   },
-  getChartData: async () => {
-    return apiRequest<any[]>('GET', '/chart-data');
+  getChartData: async (timeRange: string = 'daily') => {
+    return apiRequest<any[]>('GET', `/chart-data?timeRange=${timeRange}`);
   },
 };
 

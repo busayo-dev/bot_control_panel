@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { stats, users } from '@/lib/api';
+import { stats } from '@/lib/api';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Users, UserCheck, UserX, Send, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Stats {
   total_users: number;
@@ -15,10 +22,22 @@ interface Stats {
   active_1h: number;
 }
 
+type TimeRange = 'daily' | 'weekly' | 'monthly' | 'yearly';
+
+interface ChartDataPoint {
+  name: string;
+  date: string;
+  allMessages: number;
+  sentMessages: number;
+  receivedMessages: number;
+  videosSent: number;
+}
+
 export default function Dashboard() {
   const { t, isRTL } = useLanguage();
   const [statsData, setStatsData] = useState<Stats | null>(null);
-  const [chartData, setChartData] = useState<any[]>([]);
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+  const [timeRange, setTimeRange] = useState<TimeRange>('daily');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,10 +47,10 @@ export default function Dashboard() {
         setLoading(true);
         const [statsRes, chartRes] = await Promise.all([
           stats.getStats(),
-          stats.getChartData()
+          stats.getChartData(timeRange)
         ]);
         setStatsData(statsRes as Stats);
-        setChartData(chartRes as any[]);
+        setChartData(chartRes as ChartDataPoint[]);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch data');
       } finally {
@@ -40,7 +59,7 @@ export default function Dashboard() {
     };
 
     fetchData();
-  }, []);
+  }, [timeRange]);
 
   return (
     <DashboardLayout>
@@ -97,13 +116,31 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* Charts */}
+        {/* Time Range Selector */}
+        <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <label className={`text-sm font-medium text-slate-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+            {t('timeRange')}:
+          </label>
+          <Select value={timeRange} onValueChange={(value) => setTimeRange(value as TimeRange)}>
+            <SelectTrigger className="w-32" dir={isRTL ? 'rtl' : 'ltr'}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent dir={isRTL ? 'rtl' : 'ltr'}>
+              <SelectItem value="daily">{t('daily')}</SelectItem>
+              <SelectItem value="weekly">{t('weekly')}</SelectItem>
+              <SelectItem value="monthly">{t('monthly')}</SelectItem>
+              <SelectItem value="yearly">{t('yearly')}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Activity Chart */}
+          {/* All Messages Chart */}
           <Card>
             <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
-              <CardTitle>{t('weeklyActivity')}</CardTitle>
-              <CardDescription>{t('userEngagement')}</CardDescription>
+              <CardTitle>{t('allMessages')}</CardTitle>
+              <CardDescription>{t('allMessagesDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -122,30 +159,22 @@ export default function Dashboard() {
                   />
                   <Line
                     type="monotone"
-                    dataKey="users"
+                    dataKey="allMessages"
                     stroke="#10b981"
                     strokeWidth={2}
                     dot={{ fill: '#10b981', r: 4 }}
-                    name={t('newUsers')}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="messages"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                    dot={{ fill: '#3b82f6', r: 4 }}
-                    name={t('messagesSent')}
+                    name={t('allMessages')}
                   />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
 
-          {/* Messages Chart */}
+          {/* Sent Messages Chart */}
           <Card>
             <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
-              <CardTitle>{t('messageDistribution')}</CardTitle>
-              <CardDescription>{t('dailyVolume')}</CardDescription>
+              <CardTitle>{t('sentMessages')}</CardTitle>
+              <CardDescription>{t('sentMessagesDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -156,23 +185,50 @@ export default function Dashboard() {
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#1e293b',
-                      border: '1px solid #10b981',
+                      border: '1px solid #3b82f6',
                       borderRadius: '8px',
                       textAlign: isRTL ? 'right' : 'left'
                     }}
                     labelStyle={{ color: '#f1f5f9' }}
                   />
-                  <Bar dataKey="messages" fill="#10b981" radius={[8, 8, 0, 0]} name={t('messagesSent')} />
+                  <Bar dataKey="sentMessages" fill="#3b82f6" radius={[8, 8, 0, 0]} name={t('sentMessages')} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Received Messages Chart */}
+          <Card>
+            <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
+              <CardTitle>{t('receivedMessages')}</CardTitle>
+              <CardDescription>{t('receivedMessagesDesc')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="name" stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
+                  <YAxis stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1e293b',
+                      border: '1px solid #f59e0b',
+                      borderRadius: '8px',
+                      textAlign: isRTL ? 'right' : 'left'
+                    }}
+                    labelStyle={{ color: '#f1f5f9' }}
+                  />
+                  <Bar dataKey="receivedMessages" fill="#f59e0b" radius={[8, 8, 0, 0]} name={t('receivedMessages')} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
 
           {/* Video Activity Chart */}
-          <Card className="lg:col-span-2">
+          <Card>
             <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
               <CardTitle>{t('videoActivity')}</CardTitle>
-              <CardDescription>{t('dailyVideos')}</CardDescription>
+              <CardDescription>{t('videoActivityDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -191,7 +247,7 @@ export default function Dashboard() {
                   />
                   <Line
                     type="monotone"
-                    dataKey="videos"
+                    dataKey="videosSent"
                     stroke="#8b5cf6"
                     strokeWidth={3}
                     dot={{ fill: '#8b5cf6', r: 6 }}

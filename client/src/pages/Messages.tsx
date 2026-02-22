@@ -34,6 +34,7 @@ export default function Messages() {
   const { t, isRTL } = useLanguage();
   const [message, setMessage] = useState('');
   const [target, setTarget] = useState<MessageTarget>('subscribers');
+  const [onlyActive24h, setOnlyActive24h] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [result, setResult] = useState<SendResult | null>(null);
@@ -58,6 +59,7 @@ export default function Messages() {
       const response = await messaging.sendBulkMessage({
         message,
         target,
+        onlyActive24h,
       });
 
       setResult(response.results as SendResult);
@@ -103,6 +105,24 @@ export default function Messages() {
               <p className={`text-xs text-slate-600 ${isRTL ? 'text-right' : 'text-left'}`}>
                 {t('targetAudience')}: <span className="font-semibold">{targetLabels[target]}</span>
               </p>
+            </div>
+
+            {/* 24-Hour Active Users Toggle */}
+            <div className={`flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <div className="flex-1">
+                <label className={`block text-sm font-medium text-slate-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+                  {t('onlyActive24h')}
+                </label>
+                <p className={`text-xs text-slate-600 mt-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+                  {t('onlyActive24hDesc')}
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={onlyActive24h}
+                onChange={(e) => setOnlyActive24h(e.target.checked)}
+                className="w-5 h-5 rounded border-slate-300 text-emerald-600 cursor-pointer"
+              />
             </div>
 
             {/* Message Input */}
@@ -182,13 +202,16 @@ export default function Messages() {
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent className={isRTL ? 'text-right' : 'text-left'}>
           <AlertDialogTitle>Confirm Message Send</AlertDialogTitle>
-          <AlertDialogDescription>
+              <AlertDialogDescription>
             <div className="space-y-3">
-              <p>You are about to send this message to <span className="font-semibold">{targetLabels[target]}</span>:</p>
+              <p>
+                {t('confirmSendMessage')} <span className="font-semibold">{targetLabels[target]}</span>
+                {onlyActive24h && ` ${t('whoActive24h')}`}:
+              </p>
               <div className={`bg-slate-100 p-4 rounded-lg border border-slate-200 max-h-32 overflow-y-auto ${isRTL ? 'text-right' : 'text-left'}`}>
                 <p className="text-sm text-slate-900 whitespace-pre-wrap">{message}</p>
               </div>
-              <p className="text-sm text-red-600 font-medium">This action cannot be undone.</p>
+              <p className="text-sm text-red-600 font-medium">{t('cannotUndo')}</p>
             </div>
           </AlertDialogDescription>
           <div className={`flex gap-3 ${isRTL ? 'justify-start' : 'justify-end'}`}>

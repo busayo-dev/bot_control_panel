@@ -74,6 +74,28 @@ export const translations: Translations = {
   sendMessage: { en: 'Send Message', he: 'שלח הודעה' },
   sending: { en: 'Sending...', he: 'שולח...' },
   messageSuccess: { en: 'Message sent successfully!', he: 'ההודעה נשלחה בהצלחה!' },
+  onlyActive24h: { en: 'Only Active Users (Last 24h)', he: 'רק משתמשים פעילים (24 שעות אחרונות)' },
+  onlyActive24hDesc: { en: 'Send message only to users who have interacted with the bot in the last 24 hours', he: 'שלח הודעה רק למשתמשים שקיימו אינטראקציה עם הבוט ב-24 השעות האחרונות' },
+  confirmSendMessage: { en: 'You are about to send this message to', he: 'אתה עומד לשלוח הודעה זו ל' },
+  whoActive24h: { en: 'who were active in the last 24 hours', he: 'שהיו פעילים ב-24 השעות האחרונות' },
+  cannotUndo: { en: 'This action cannot be undone.', he: 'לא ניתן לבטל פעולה זו.' },
+
+  // Dashboard Time Range
+  timeRange: { en: 'Time Range', he: 'טווח זמן' },
+  daily: { en: 'Daily', he: 'יומי' },
+  weekly: { en: 'Weekly', he: 'שבועי' },
+  monthly: { en: 'Monthly', he: 'חודשי' },
+  yearly: { en: 'Yearly', he: 'שנתי' },
+
+  // Chart Labels
+  allMessages: { en: 'All Messages', he: 'כל ההודעות' },
+  allMessagesDesc: { en: 'Total messages exchanged (sent and received)', he: 'סה"כ הודעות שהוחלפו (שנשלחו וקיבלו)' },
+  sentMessages: { en: 'Sent Messages', he: 'הודעות שנשלחו' },
+  sentMessagesDesc: { en: 'Messages sent to users (text and video)', he: 'הודעות שנשלחו למשתמשים (טקסט וסרטון)' },
+  receivedMessages: { en: 'Received Messages', he: 'הודעות שהתקבלו' },
+  receivedMessagesDesc: { en: 'Messages received from users', he: 'הודעות שהתקבלו מהמשתמשים' },
+  videoActivity: { en: 'Video Content Activity', he: 'פעילות תוכן וידאו' },
+  videoActivityDesc: { en: 'Videos sent to users', he: 'סרטונים שנשלחו למשתמשים' },
 
   // Videos Page
   videoContent: { en: 'Video Content', he: 'תוכן וידאו' },
