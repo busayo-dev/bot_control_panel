@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { users } from '@/lib/api';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Search, Shield, ShieldOff, Loader2 } from 'lucide-react';
+import { Search, Shield, ShieldOff, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface User {
@@ -36,6 +36,7 @@ export default function Users() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
@@ -68,6 +69,11 @@ export default function Users() {
     setShowBlockDialog(true);
   };
 
+  const handleDeleteUser = (user: User) => {
+    setSelectedUser(user);
+    setShowDeleteDialog(true);
+  };
+
   const confirmBlockToggle = async () => {
     if (!selectedUser) return;
 
@@ -87,6 +93,25 @@ export default function Users() {
     } finally {
       setActionLoading(false);
       setShowBlockDialog(false);
+      setSelectedUser(null);
+    }
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!selectedUser) return;
+
+    try {
+      setActionLoading(true);
+      await users.deleteUser(selectedUser.waId);
+      
+      setUserList((prev) => prev.filter((u) => u.waId !== selectedUser.waId));
+
+      toast.success(t('messageSuccess'));
+    } catch (err) {
+      toast.error('Error deleting user');
+    } finally {
+      setActionLoading(false);
+      setShowDeleteDialog(false);
       setSelectedUser(null);
     }
   };
@@ -178,25 +203,37 @@ export default function Users() {
                           {new Date(user.lastActiveAt).toLocaleDateString()}
                         </td>
                         <td>
-                          <Button
-                            size="sm"
-                            variant={user.isBlocked ? 'outline' : 'destructive'}
-                            onClick={() => handleBlockToggle(user)}
-                            disabled={actionLoading}
-                            className="gap-2"
-                          >
-                            {user.isBlocked ? (
-                              <>
-                                <ShieldOff className="h-4 w-4" />
-                                {t('unblockUser')}
-                              </>
-                            ) : (
-                              <>
-                                <Shield className="h-4 w-4" />
-                                {t('blockUser')}
-                              </>
-                            )}
-                          </Button>
+                          <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                            <Button
+                              size="sm"
+                              variant={user.isBlocked ? 'outline' : 'destructive'}
+                              onClick={() => handleBlockToggle(user)}
+                              disabled={actionLoading}
+                              className="gap-2"
+                            >
+                              {user.isBlocked ? (
+                                <>
+                                  <ShieldOff className="h-4 w-4" />
+                                  {t('unblockUser')}
+                                </>
+                              ) : (
+                                <>
+                                  <Shield className="h-4 w-4" />
+                                  {t('blockUser')}
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteUser(user)}
+                              disabled={actionLoading}
+                              className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              {t('deleteUser')}
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -235,6 +272,37 @@ export default function Users() {
                 t('unblockUser')
               ) : (
                 t('blockUser')
+              )}
+            </AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className={isRTL ? 'text-right' : 'text-left'}>
+          <AlertDialogTitle>
+            {t('deleteUser')}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {t('deleteUserConfirm')}
+            <br /><br />
+            <strong>User: {selectedUser?.fullName || selectedUser?.waId}</strong>
+          </AlertDialogDescription>
+          <div className={`flex gap-3 ${isRTL ? 'justify-start' : 'justify-end'}`}>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteUser}
+              disabled={actionLoading}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {actionLoading ? (
+                <>
+                  <Loader2 className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4 animate-spin`} />
+                  {t('sending')}
+                </>
+              ) : (
+                t('deleteUser')
               )}
             </AlertDialogAction>
           </div>

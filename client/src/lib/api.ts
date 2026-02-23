@@ -155,6 +155,9 @@ export const users = {
   toggleBlock: async (waId: string, block: boolean) => {
     return apiRequest('POST', '/users/toggle-block', { waId, block });
   },
+  deleteUser: async (waId: string) => {
+    return apiRequest('POST', '/users/delete', { waId });
+  },
 };
 
 // Bulk Messaging API calls

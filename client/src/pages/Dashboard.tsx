@@ -135,128 +135,135 @@ export default function Dashboard() {
         </div>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* All Messages Chart */}
-          <Card>
-            <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
-              <CardTitle>{t('allMessages')}</CardTitle>
-              <CardDescription>{t('allMessagesDesc')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="name" stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
-                  <YAxis stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1e293b',
-                      border: '1px solid #10b981',
-                      borderRadius: '8px',
-                      textAlign: isRTL ? 'right' : 'left'
-                    }}
-                    labelStyle={{ color: '#f1f5f9' }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="allMessages"
-                    stroke="#10b981"
-                    strokeWidth={2}
-                    dot={{ fill: '#10b981', r: 4 }}
-                    name={t('allMessages')}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+        <div className="flex flex-col gap-6">
+          {/* Top Row: All Messages Chart (Full Width) */}
+          <div className="w-full">
+            <Card>
+              <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
+                <CardTitle>{t('allMessages')}</CardTitle>
+                <CardDescription>{t('allMessagesDesc')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={350}>
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="name" stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
+                    <YAxis stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1e293b',
+                        border: '1px solid #10b981',
+                        borderRadius: '8px',
+                        textAlign: isRTL ? 'right' : 'left'
+                      }}
+                      labelStyle={{ color: '#f1f5f9' }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="allMessages"
+                      stroke="#10b981"
+                      strokeWidth={2}
+                      dot={{ fill: '#10b981', r: 4 }}
+                      name={t('allMessages')}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
 
-          {/* Sent Messages Chart */}
-          <Card>
-            <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
-              <CardTitle>{t('sentMessages')}</CardTitle>
-              <CardDescription>{t('sentMessagesDesc')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="name" stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
-                  <YAxis stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1e293b',
-                      border: '1px solid #3b82f6',
-                      borderRadius: '8px',
-                      textAlign: isRTL ? 'right' : 'left'
-                    }}
-                    labelStyle={{ color: '#f1f5f9' }}
-                  />
-                  <Bar dataKey="sentMessages" fill="#3b82f6" radius={[8, 8, 0, 0]} name={t('sentMessages')} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          {/* Middle Row: Sent and Received Messages (Side by Side on Large Screens) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Sent Messages Chart */}
+            <Card>
+              <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
+                <CardTitle>{t('sentMessages')}</CardTitle>
+                <CardDescription>{t('sentMessagesDesc')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="name" stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
+                    <YAxis stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1e293b',
+                        border: '1px solid #3b82f6',
+                        borderRadius: '8px',
+                        textAlign: isRTL ? 'right' : 'left'
+                      }}
+                      labelStyle={{ color: '#f1f5f9' }}
+                    />
+                    <Bar dataKey="sentMessages" fill="#3b82f6" radius={[8, 8, 0, 0]} name={t('sentMessages')} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
 
-          {/* Received Messages Chart */}
-          <Card>
-            <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
-              <CardTitle>{t('receivedMessages')}</CardTitle>
-              <CardDescription>{t('receivedMessagesDesc')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="name" stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
-                  <YAxis stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1e293b',
-                      border: '1px solid #f59e0b',
-                      borderRadius: '8px',
-                      textAlign: isRTL ? 'right' : 'left'
-                    }}
-                    labelStyle={{ color: '#f1f5f9' }}
-                  />
-                  <Bar dataKey="receivedMessages" fill="#f59e0b" radius={[8, 8, 0, 0]} name={t('receivedMessages')} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+            {/* Received Messages Chart */}
+            <Card>
+              <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
+                <CardTitle>{t('receivedMessages')}</CardTitle>
+                <CardDescription>{t('receivedMessagesDesc')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="name" stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
+                    <YAxis stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1e293b',
+                        border: '1px solid #f59e0b',
+                        borderRadius: '8px',
+                        textAlign: isRTL ? 'right' : 'left'
+                      }}
+                      labelStyle={{ color: '#f1f5f9' }}
+                    />
+                    <Bar dataKey="receivedMessages" fill="#f59e0b" radius={[8, 8, 0, 0]} name={t('receivedMessages')} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
 
-          {/* Video Activity Chart */}
-          <Card>
-            <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
-              <CardTitle>{t('videoActivity')}</CardTitle>
-              <CardDescription>{t('videoActivityDesc')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="name" stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
-                  <YAxis stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1e293b',
-                      border: '1px solid #8b5cf6',
-                      borderRadius: '8px',
-                      textAlign: isRTL ? 'right' : 'left'
-                    }}
-                    labelStyle={{ color: '#f1f5f9' }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="videosSent"
-                    stroke="#8b5cf6"
-                    strokeWidth={3}
-                    dot={{ fill: '#8b5cf6', r: 6 }}
-                    name={t('videosSent')}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          {/* Bottom Row: Video Activity Chart (Full Width) */}
+          <div className="w-full">
+            <Card>
+              <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
+                <CardTitle>{t('videoActivity')}</CardTitle>
+                <CardDescription>{t('videoActivityDesc')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={350}>
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="name" stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
+                    <YAxis stroke="#64748b" orientation={isRTL ? 'right' : 'left'} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1e293b',
+                        border: '1px solid #8b5cf6',
+                        borderRadius: '8px',
+                        textAlign: isRTL ? 'right' : 'left'
+                      }}
+                      labelStyle={{ color: '#f1f5f9' }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="videosSent"
+                      stroke="#8b5cf6"
+                      strokeWidth={3}
+                      dot={{ fill: '#8b5cf6', r: 6 }}
+                      name={t('videosSent')}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Quick Actions */}

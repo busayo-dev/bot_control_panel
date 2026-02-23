@@ -60,6 +60,8 @@ export const translations: Translations = {
   actions: { en: 'Actions', he: 'פעולות' },
   blockUser: { en: 'Block User', he: 'חסום משתמש' },
   unblockUser: { en: 'Unblock User', he: 'בטל חסימה' },
+  deleteUser: { en: 'Delete User', he: 'מחיקת משתמש' },
+  deleteUserConfirm: { en: 'Are you sure you want to delete this user? This will perform a soft delete for investigation purposes, but if they message again, they will be treated as a new user.', he: 'האם אתה בטוח שברצונך למחוק משתמש זה? תבוצע מחיקה רכה לצרכי חקירה, אך אם המשתמש ישלח הודעה שוב, הוא יטופל כמשתמש חדש.' },
   lastActive: { en: 'Last Active', he: 'פעילות אחרונה' },
 
   // Messages Page
