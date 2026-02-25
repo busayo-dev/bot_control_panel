@@ -3,7 +3,7 @@
  * Handles all communication with the backend API
  */
 
-const API_BASE_URL = 'https://whatsapp-video-bot-slb7.onrender.com/api/admin';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 interface ApiResponse<T> {
   success?: boolean;
