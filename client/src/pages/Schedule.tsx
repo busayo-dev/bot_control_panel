@@ -12,6 +12,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { schedule as scheduleApi } from '@/lib/scheduleApi';
 import { AlertCircle, CheckCircle, Clock } from 'lucide-react';
@@ -275,102 +283,6 @@ export default function Schedule() {
           </CardContent>
         </Card>
 
-        {/* Edit Schedule Form */}
-        {editingDay !== null && (
-          <Card className="border-blue-200 bg-blue-50">
-            <CardHeader className={isRTL ? 'text-right' : 'text-left'}>
-              <CardTitle>{t('editSchedule')} - {getDayLabel(editingDay)}</CardTitle>
-              <CardDescription>{t('configureAvailability')}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Availability Type Selection */}
-              <div className="space-y-3">
-                <Label className="text-base font-semibold">{t('availabilityType')}</Label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {['ALWAYS', 'NEVER', 'CUSTOM'].map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setFormData({ ...formData, availabilityType: type as any })}
-                      className={`p-4 border-2 rounded-lg transition-all text-center cursor-pointer ${
-                        formData.availabilityType === type
-                          ? 'border-blue-600 bg-blue-100'
-                          : 'border-gray-200 bg-white hover:border-gray-300'
-                      }`}
-                    >
-                      <p className="font-semibold text-slate-900">{t(type.toLowerCase())}</p>
-                      <p className="text-xs text-slate-600 mt-1">
-                        {type === 'ALWAYS' && t('available24_7')}
-                        {type === 'NEVER' && t('notAvailable')}
-                        {type === 'CUSTOM' && t('customHours')}
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Custom Time Inputs */}
-              {formData.availabilityType === 'CUSTOM' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-white rounded-lg border border-blue-200">
-                  <div className="space-y-2">
-                    <Label htmlFor="startTime">{t('startTime')}</Label>
-                    <Input
-                      id="startTime"
-                      type="time"
-                      value={formData.startTime || '09:00'}
-                      onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                      className="w-full"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="endTime">{t('endTime')}</Label>
-                    <Input
-                      id="endTime"
-                      type="time"
-                      value={formData.endTime || '17:00'}
-                      onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Unavailable Message */}
-              <div className="space-y-2">
-                <Label htmlFor="message">{t('messageWhenUnavailable')}</Label>
-                <Textarea
-                  id="message"
-                  placeholder={t('enterMessageUnavailable')}
-                  value={formData.unavailableMessage || ''}
-                  onChange={(e) => setFormData({ ...formData, unavailableMessage: e.target.value })}
-                  className="w-full"
-                  rows={3}
-                />
-                <p className="text-xs text-slate-500">
-                  {t('leaveEmptyToIgnore')}
-                </p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3 justify-end">
-                <Button
-                  variant="outline"
-                  onClick={() => setEditingDay(null)}
-                  disabled={saving}
-                >
-                  {t('cancel')}
-                </Button>
-                <Button
-                  onClick={handleSaveSchedule}
-                  disabled={saving}
-                  className="bg-blue-600 hover:bg-blue-700"
-                >
-                  {saving ? t('saving') : t('saveSchedule')}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Initialize Button */}
         <div className="flex justify-end">
           <Button
@@ -383,6 +295,103 @@ export default function Schedule() {
           </Button>
         </div>
       </div>
+
+      {/* Edit Schedule Modal Dialog */}
+      <Dialog open={editingDay !== null} onOpenChange={(open) => !open && setEditingDay(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader className={isRTL ? 'text-right' : 'text-left'}>
+            <DialogTitle>{t('editSchedule')} - {editingDay !== null ? getDayLabel(editingDay) : ''}</DialogTitle>
+            <DialogDescription>{t('configureAvailability')}</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 py-4">
+            {/* Availability Type Selection */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">{t('availabilityType')}</Label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {['ALWAYS', 'NEVER', 'CUSTOM'].map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setFormData({ ...formData, availabilityType: type as any })}
+                    className={`p-4 border-2 rounded-lg transition-all text-center cursor-pointer ${
+                      formData.availabilityType === type
+                        ? 'border-blue-600 bg-blue-100'
+                        : 'border-gray-200 bg-white hover:border-gray-300'
+                    }`}
+                  >
+                    <p className="font-semibold text-slate-900">{t(type.toLowerCase())}</p>
+                    <p className="text-xs text-slate-600 mt-1">
+                      {type === 'ALWAYS' && t('available24_7')}
+                      {type === 'NEVER' && t('notAvailable')}
+                      {type === 'CUSTOM' && t('customHours')}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Custom Time Inputs */}
+            {formData.availabilityType === 'CUSTOM' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-slate-50 rounded-lg border border-blue-200">
+                <div className="space-y-2">
+                  <Label htmlFor="startTime">{t('startTime')}</Label>
+                  <Input
+                    id="startTime"
+                    type="time"
+                    value={formData.startTime || '09:00'}
+                    onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                    className="w-full"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="endTime">{t('endTime')}</Label>
+                  <Input
+                    id="endTime"
+                    type="time"
+                    value={formData.endTime || '17:00'}
+                    onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Unavailable Message */}
+            <div className="space-y-2">
+              <Label htmlFor="message">{t('messageWhenUnavailable')}</Label>
+              <Textarea
+                id="message"
+                placeholder={t('enterMessageUnavailable')}
+                value={formData.unavailableMessage || ''}
+                onChange={(e) => setFormData({ ...formData, unavailableMessage: e.target.value })}
+                className="w-full"
+                rows={3}
+              />
+              <p className="text-xs text-slate-500">
+                {t('leaveEmptyToIgnore')}
+              </p>
+            </div>
+          </div>
+
+          {/* Dialog Footer with Action Buttons */}
+          <DialogFooter className={isRTL ? 'flex-row-reverse' : ''}>
+            <Button
+              variant="outline"
+              onClick={() => setEditingDay(null)}
+              disabled={saving}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              onClick={handleSaveSchedule}
+              disabled={saving}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {saving ? t('saving') : t('saveSchedule')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }
