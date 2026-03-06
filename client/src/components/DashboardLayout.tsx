@@ -21,6 +21,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  Clock,
 } from 'lucide-react';
 
 interface NavItem {
@@ -41,6 +42,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { label: t('messages'), href: '/dashboard/messages', icon: <MessageSquare className="w-5 h-5" /> },
     // { label: t('videos'), href: '/dashboard/videos', icon: <Video className="w-5 h-5" /> },
     { label: t('botResponses'), href: '/dashboard/responses', icon: <MessageSquare className="w-5 h-5" /> },
+    { label: t('schedule'), href: '/dashboard/schedule', icon: <Clock className="w-5 h-5" /> },
     { label: t('settings'), href: '/dashboard/settings', icon: <Settings className="w-5 h-5" /> },
   ];
 

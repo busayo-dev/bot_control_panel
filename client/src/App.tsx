@@ -12,6 +12,7 @@ import Messages from "./pages/Messages";
 import Videos from "./pages/Videos";
 import Responses from "./pages/Responses";
 import Settings from "./pages/Settings";
+import Schedule from "./pages/Schedule";
 import NotFound from "./pages/NotFound";
 
 // Protected route wrapper
@@ -47,6 +48,7 @@ function Router() {
       <Route path="/dashboard/messages" component={() => <ProtectedRoute component={Messages} />} />
       {/* <Route path="/dashboard/videos" component={() => <ProtectedRoute component={Videos} />} /> */}
       <Route path="/dashboard/responses" component={() => <ProtectedRoute component={Responses} />} />
+      <Route path="/dashboard/schedule" component={() => <ProtectedRoute component={Schedule} />} />
       <Route path="/dashboard/settings" component={() => <ProtectedRoute component={Settings} />} />
       <Route path="/404" component={NotFound} />
       {/* Redirect root to dashboard or login */}
